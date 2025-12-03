@@ -24,7 +24,7 @@ POSTGRES_PASSWORD=app
 DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?serverVersion=17&charset=utf8
 ```
 
-Feel free to override them in `docker/etc/config.env` or `.env.local`.
+Feel free to override them in `docker/config/config.env` or `.env.local`.
 
 ## Key Targets
 
@@ -36,3 +36,11 @@ Feel free to override them in `docker/etc/config.env` or `.env.local`.
 - `postgres.install` – Called by `make install`; ensures environment variables are configured.
 
 All commands are listed in `make help` once the bundle is present in `docker/`.
+
+## License
+
+This make bundle is provided under the MIT License. See the [LICENSE](./LICENSE) file for details.
+
+Part of the [make-core](https://github.com/xebro-gmbh/make-core) system.
+
+Copyright (c) 2025 xebro GmbH

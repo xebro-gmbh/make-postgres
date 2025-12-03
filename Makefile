@@ -18,7 +18,7 @@ postgres.restart: ## Show postgres container logs
 	@${DOCKER_COMPOSE} up -d postgres
 
 postgres.console: ## Run mysql console
-	${DOCKER_COMPOSE} exec postgres psql symfony --username=app
+	${DOCKER_COMPOSE} exec postgres psql ${POSTGRES_DB} --username=${POSTGRES_USER}
 
 postgres.export: ## create database backup from current db
 	@mkdir -p ${XO_MODULES_DIR}/var
@@ -26,7 +26,7 @@ postgres.export: ## create database backup from current db
 
 postgres.install:
 	$(call headline,"Installing ${COMPONENT}")
-	$(call ensure_env_vars,".env","${POSTGRES_DIR}.env")
+	$(call ensure_env_vars,".env","${POSTGRES_DIR}config/.env")
 
 
 install: postgres.install
