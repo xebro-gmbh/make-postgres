@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "${POSTGRES_DB:-symfony}",
+          "-U",
+          "${POSTGRES_USER:-app}",
+        ]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ${XO_ROOT_DIR}/.env
+      - ${XO_ROOT_DIR}/.env.local
+networks:
+  default:
+    external: true
+    name: ${XO_PROJECT_NAME}
