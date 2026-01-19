@@ -3,6 +3,7 @@
 #--------------------------
 
 DB_FILENAME=$(shell date +"%Y%m%d%H%M%S")
+DUMP ?=
 
 POSTGRES_DIR := $(patsubst $(XO_ROOT_DIR)/%,./%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 POSTGRES := $(notdir $(patsubst %/,%,$(POSTGRES_DIR)))
@@ -23,6 +24,15 @@ postgres.console: ## Run mysql console
 postgres.export: ## create database backup from current db
 	@mkdir -p ${XO_MODULES_DIR}/var
 	${DOCKER_COMPOSE} exec postgres pg_dump symfony --username=app --clean --create   > "${XO_MODULES_DIR}/var/${DB_FILENAME}.sql"
+
+postgres.import: ## import database dump into current db (DUMP=path/to/dump.sql[.gz])
+	@if [ -z "${DUMP}" ]; then echo "Usage: make postgres.import DUMP=path/to/dump.sql[.gz]"; exit 1; fi
+	@if [ ! -f "${DUMP}" ]; then echo "Dump not found: ${DUMP}"; exit 1; fi
+	@if echo "${DUMP}" | grep -qE '\.gz$$'; then \
+		gzip -dc "${DUMP}" | ${DOCKER_COMPOSE} exec -T postgres psql ${POSTGRES_DB} --username=${POSTGRES_USER} --set=ON_ERROR_STOP=on; \
+	else \
+		${DOCKER_COMPOSE} exec -T postgres psql ${POSTGRES_DB} --username=${POSTGRES_USER} --set=ON_ERROR_STOP=on < "${DUMP}"; \
+	fi
 
 postgres.install:
 	$(call headline,"Installing ${COMPONENT}")
