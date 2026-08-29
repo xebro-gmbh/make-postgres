@@ -4,6 +4,8 @@
 
 DB_FILENAME=$(shell date +"%Y%m%d%H%M%S")
 
+XO_POSTGRES_PORT ?= 5432
+
 POSTGRES_DIR := $(patsubst $(XO_ROOT_DIR)/%,./%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 POSTGRES := $(notdir $(patsubst %/,%,$(POSTGRES_DIR)))
 
